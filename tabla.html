@@ -42,6 +42,14 @@
     thead th { padding: 14px 12px; text-align: center; }
     thead th.equipo-col { text-align: left; padding-left: 20px; }
 
+    /* Columnas que se ocultan en móvil */
+    @media (max-width: 500px) {
+      .col-hide { display: none; }
+      td.equipo-col { padding-left: 10px; }
+      td, thead th { padding: 10px 6px; font-size: 0.82rem; }
+      header h1 { font-size: 1.3rem; }
+    }
+
     tbody tr {
       border-bottom: 1px solid #dddddd;
       transition: background 0.2s;
@@ -131,12 +139,12 @@
         <tr>
           <th class="equipo-col">#</th>
           <th class="equipo-col">Equipo</th>
-          <th>PJ</th>
-          <th>G</th>
-          <th>E</th>
-          <th>P</th>
-          <th>GF</th>
-          <th>GC</th>
+          <th class="col-hide">PJ</th>
+          <th class="col-hide">G</th>
+          <th class="col-hide">E</th>
+          <th class="col-hide">P</th>
+          <th class="col-hide">GF</th>
+          <th class="col-hide">GC</th>
           <th>DG</th>
           <th>PTS</th>
         </tr>
@@ -223,11 +231,11 @@
             <td class="pos">${e.posicion}</td>
             <td class="equipo-col">${imgHTML}${e.equipo}</td>
             <td>${e.partidos_jugados}</td>
-            <td>${e.ganados}</td>
-            <td>${e.empatados}</td>
-            <td>${e.perdidos}</td>
-            <td>${e.goles_favor}</td>
-            <td>${e.goles_contra}</td>
+            <td class="col-hide">${e.ganados}</td>
+            <td class="col-hide">${e.empatados}</td>
+            <td class="col-hide">${e.perdidos}</td>
+            <td class="col-hide">${e.goles_favor}</td>
+            <td class="col-hide">${e.goles_contra}</td>
             <td>${e.diferencia_goles > 0 ? '+' : ''}${e.diferencia_goles}</td>
             <td class="pts">${e.puntos}</td>
           </tr>`;

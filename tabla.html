@@ -131,7 +131,7 @@
           <th class="col-hide">P</th>
           <th class="col-hide">GF</th>
           <th class="col-hide">GC</th>
-          <th class="col-hide">DG</th>
+          <th>DG</th>
           <th>PTS</th>
         </tr>
       </thead>
@@ -222,7 +222,7 @@
             <td class="col-hide">${e.perdidos}</td>
             <td class="col-hide">${e.goles_favor}</td>
             <td class="col-hide">${e.goles_contra}</td>
-            <td class="col-hide">${e.diferencia_goles > 0 ? '+' : ''}${e.diferencia_goles}</td>
+            <td>${e.diferencia_goles > 0 ? '+' : ''}${e.diferencia_goles}</td>
             <td class="pts">${e.puntos}</td>
           </tr>`;
       }).join("");

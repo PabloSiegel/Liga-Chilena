@@ -11,11 +11,10 @@
       font-family: 'Segoe UI', sans-serif;
       background: #0d1117;
       color: #e6edf3;
-      min-height: 100vh;
-      padding: 30px 20px;
+      padding: 20px;
     }
 
-    header { text-align: center; margin-bottom: 30px; }
+    header { text-align: center; margin-bottom: 20px; }
     header h1 { font-size: 1.8rem; color: #ff2e2e; letter-spacing: 1px; }
     header p { color: #8b949e; font-size: 0.9rem; margin-top: 6px; }
 
@@ -42,20 +41,6 @@
     thead th { padding: 14px 12px; text-align: center; }
     thead th.equipo-col { text-align: left; padding-left: 20px; }
 
-    /* Columnas que se ocultan en móvil */
-    @media (max-width: 500px) {
-      .col-hide { display: none; }
-      td.equipo-col { padding-left: 8px; }
-      td, thead th { padding: 5px 5px; font-size: 0.75rem; }
-      header { display: none; }
-      .logo { width: 20px; height: 20px; }
-      .logo-placeholder { width: 20px; height: 20px; }
-      .leyenda { display: none; }
-      .btn-exportar { display: none; }
-      .actualizado { display: none; }
-      body { padding: 8px; }
-    }
-
     tbody tr {
       border-bottom: 1px solid #dddddd;
       transition: background 0.2s;
@@ -80,20 +65,8 @@
     td.pos { font-weight: 700; color: #555555; width: 36px; }
     td.pts { font-weight: 800; color: #ff2e2e; font-size: 1rem; }
 
-    .logo {
-      width: 28px;
-      height: 28px;
-      object-fit: contain;
-      flex-shrink: 0;
-    }
-
-    .logo-placeholder {
-      width: 28px;
-      height: 28px;
-      background: #dddddd;
-      border-radius: 50%;
-      flex-shrink: 0;
-    }
+    .logo { width: 28px; height: 28px; object-fit: contain; flex-shrink: 0; }
+    .logo-placeholder { width: 28px; height: 28px; background: #dddddd; border-radius: 50%; flex-shrink: 0; }
 
     .btn-exportar {
       display: block;
@@ -106,16 +79,9 @@
       font-size: 1rem;
       font-weight: 600;
       cursor: pointer;
-      transition: background 0.2s;
     }
-    .btn-exportar:hover { background: #cc0000; }
 
-    .actualizado {
-      text-align: center;
-      color: #8b949e;
-      font-size: 0.8rem;
-      margin-top: 14px;
-    }
+    .actualizado { text-align: center; color: #8b949e; font-size: 0.8rem; margin-top: 14px; }
 
     .leyenda {
       display: flex;
@@ -131,6 +97,20 @@
     .naranjo { background: #f97316; }
     .verde   { background: #22c55e; }
     .rojo    { background: #ef4444; }
+
+    /* ── Pantalla pequeña ── */
+    @media (max-width: 500px) {
+      body { padding: 4px; }
+      header { display: none; }
+      .leyenda, .btn-exportar, .actualizado { display: none; }
+      .col-hide { display: none; }
+      thead th { padding: 6px 4px; font-size: 0.7rem; }
+      td { padding: 4px 4px; font-size: 0.72rem; }
+      td.equipo-col { padding-left: 6px; gap: 5px; }
+      td.pos { width: 20px; }
+      .logo { width: 18px; height: 18px; }
+      .logo-placeholder { width: 18px; height: 18px; }
+    }
   </style>
 </head>
 <body>
@@ -243,7 +223,6 @@
             <td class="col-hide">${e.goles_favor}</td>
             <td class="col-hide">${e.goles_contra}</td>
             <td class="col-hide">${e.diferencia_goles > 0 ? '+' : ''}${e.diferencia_goles}</td>
-            <td>${e.diferencia_goles > 0 ? '+' : ''}${e.diferencia_goles}</td>
             <td class="pts">${e.puntos}</td>
           </tr>`;
       }).join("");

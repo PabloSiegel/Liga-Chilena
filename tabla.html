@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Tabla de Posiciones - Liga Chilena</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #0d1117;
+      color: #e6edf3;
+      min-height: 100vh;
+      padding: 30px 20px;
+    }
+
+    header { text-align: center; margin-bottom: 30px; }
+    header h1 { font-size: 1.8rem; color: #ff2e2e; letter-spacing: 1px; }
+    header p { color: #8b949e; font-size: 0.9rem; margin-top: 6px; }
+
+    .container { max-width: 920px; margin: 0 auto; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #ffffff;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+      color: #000000;
+    }
+
+    thead tr {
+      background: #ff2e2e;
+      color: white;
+      text-transform: uppercase;
+      font-size: 0.75rem;
+      letter-spacing: 1px;
+    }
+
+    thead th { padding: 14px 12px; text-align: center; }
+    thead th.equipo-col { text-align: left; padding-left: 20px; }
+
+    tbody tr {
+      border-bottom: 1px solid #dddddd;
+      transition: background 0.2s;
+    }
+    tbody tr:hover { background: #f0f0f0; }
+
+    tbody tr.libertadores-grupo  { border-left: 4px solid #3b82f6; }
+    tbody tr.libertadores-clasif { border-left: 4px solid #f97316; }
+    tbody tr.sudamericana        { border-left: 4px solid #22c55e; }
+    tbody tr.descenso            { border-left: 4px solid #ef4444; }
+
+    td { padding: 11px 12px; text-align: center; font-size: 0.9rem; color: #000000; }
+    td.equipo-col {
+      text-align: left;
+      padding-left: 16px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #000000;
+    }
+    td.pos { font-weight: 700; color: #555555; width: 36px; }
+    td.pts { font-weight: 800; color: #ff2e2e; font-size: 1rem; }
+
+    .logo {
+      width: 28px;
+      height: 28px;
+      object-fit: contain;
+      flex-shrink: 0;
+    }
+
+    .logo-placeholder {
+      width: 28px;
+      height: 28px;
+      background: #30363d;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .btn-exportar {
+      display: block;
+      margin: 20px auto 0;
+      padding: 12px 28px;
+      background: #ff2e2e;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .btn-exportar:hover { background: #cc0000; }
+
+    .actualizado {
+      text-align: center;
+      color: #8b949e;
+      font-size: 0.8rem;
+      margin-top: 14px;
+    }
+
+    .leyenda {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      justify-content: center;
+      margin-top: 16px;
+      font-size: 0.82rem;
+    }
+    .leyenda-item { display: flex; align-items: center; gap: 7px; }
+    .leyenda-color { width: 14px; height: 14px; border-radius: 3px; flex-shrink: 0; }
+    .azul    { background: #3b82f6; }
+    .naranjo { background: #f97316; }
+    .verde   { background: #22c55e; }
+    .rojo    { background: #ef4444; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>⚽ Campeonato Nacional</h1>
+      <p>Primera División de Chile</p>
+    </header>
+
+    <table>
+      <thead>
+        <tr>
+          <th class="equipo-col">#</th>
+          <th class="equipo-col">Equipo</th>
+          <th>PJ</th>
+          <th>G</th>
+          <th>E</th>
+          <th>P</th>
+          <th>GF</th>
+          <th>GC</th>
+          <th>DG</th>
+          <th>PTS</th>
+        </tr>
+      </thead>
+      <tbody id="cuerpo"></tbody>
+    </table>
+
+    <div class="leyenda">
+      <div class="leyenda-item"><div class="leyenda-color azul"></div><span>1°-2° Fase de grupos Libertadores</span></div>
+      <div class="leyenda-item"><div class="leyenda-color naranjo"></div><span>3° Clasificado Libertadores</span></div>
+      <div class="leyenda-item"><div class="leyenda-color verde"></div><span>4°-6° Fase de grupos Sudamericana</span></div>
+      <div class="leyenda-item"><div class="leyenda-color rojo"></div><span>15°-16° Descenso</span></div>
+    </div>
+
+    <button class="btn-exportar" onclick="exportarJSON()">⬇ Exportar JSON</button>
+    <p class="actualizado" id="actualizado"></p>
+  </div>
+
+  <script>
+    // Diccionario de logos desde escudosfc.com.br
+    const LOGOS = {
+      "Colo Colo":                "https://escudosfc.com.br/images/colocolo.png",
+      "Universidad de Chile":     "https://escudosfc.com.br/images/unichile.png",
+      "Universidad Católica":     "https://escudosfc.com.br/images/unicatolica.png",
+      "Ñublense":                 "https://escudosfc.com.br/images/nublense_chi.png",
+      "Huachipato":               "https://escudosfc.com.br/images/huachipato.png",
+      "Audax Italiano":           "https://escudosfc.com.br/images/audax.png",
+      "Unión La Calera":          "https://escudosfc.com.br/images/union_la_calera_chi.png",
+      "O'Higgins":                "https://escudosfc.com.br/images/ohiggins.jpg",
+      "Cobresal":                 "https://escudosfc.com.br/images/cobresal.gif",
+      "Palestino":                "https://escudosfc.com.br/images/palestino.gif",
+      "Everton CD":               "https://escudosfc.com.br/images/everton_ch.png",
+      "Coquimbo Unido":           "https://escudosfc.com.br/images/coquimbo.png",
+      "La Serena":                "https://escudosfc.com.br/images/laserena.jpg",
+      "Deportes Limache":         "https://escudosfc.com.br/images/limache_chi.jpg",
+      "Universidad de Concepción":"https://escudosfc.com.br/images/un_concepcion_chi.png",
+      "Deportes Concepcion":      "https://escudosfc.com.br/images/depconcepcion.png",
+    };
+
+    function getLogo(nombre) {
+      // Busca coincidencia exacta primero, luego parcial
+      if (LOGOS[nombre]) return LOGOS[nombre];
+      const key = Object.keys(LOGOS).find(k =>
+        nombre.toLowerCase().includes(k.toLowerCase()) ||
+        k.toLowerCase().includes(nombre.toLowerCase())
+      );
+      return key ? LOGOS[key] : null;
+    }
+
+    function getRowClass(pos) {
+      if (pos <= 2)  return "libertadores-grupo";
+      if (pos === 3) return "libertadores-clasif";
+      if (pos <= 6)  return "sudamericana";
+      if (pos >= 15) return "descenso";
+      return "";
+    }
+
+    let datosTabla = [];
+
+    async function cargarTabla() {
+      try {
+        const res  = await fetch("http://localhost:8000/tabla");
+        const data = await res.json();
+        datosTabla = data.tabla;
+        renderTabla(datosTabla);
+        document.getElementById("actualizado").textContent =
+          "Actualizado: " + new Date().toLocaleString("es-CL");
+      } catch (e) {
+        document.getElementById("cuerpo").innerHTML =
+          `<tr><td colspan="10" style="text-align:center;padding:20px;color:#ef4444;">
+            ⚠️ No se pudo conectar con la API. Asegúrate de que el servidor esté corriendo.
+          </td></tr>`;
+      }
+    }
+
+    function renderTabla(tabla) {
+      const cuerpo = document.getElementById("cuerpo");
+      cuerpo.innerHTML = tabla.map(e => {
+        const logo = getLogo(e.equipo);
+        const imgHTML = logo
+          ? `<img src="${logo}" class="logo" alt="${e.equipo}" onerror="this.replaceWith(document.createElement('div'));this.className='logo-placeholder'">`
+          : `<div class="logo-placeholder"></div>`;
+
+        return `
+          <tr class="${getRowClass(e.posicion)}">
+            <td class="pos">${e.posicion}</td>
+            <td class="equipo-col">${imgHTML}${e.equipo}</td>
+            <td>${e.partidos_jugados}</td>
+            <td>${e.ganados}</td>
+            <td>${e.empatados}</td>
+            <td>${e.perdidos}</td>
+            <td>${e.goles_favor}</td>
+            <td>${e.goles_contra}</td>
+            <td>${e.diferencia_goles > 0 ? '+' : ''}${e.diferencia_goles}</td>
+            <td class="pts">${e.puntos}</td>
+          </tr>`;
+      }).join("");
+    }
+
+    function exportarJSON() {
+      const blob = new Blob([JSON.stringify(datosTabla, null, 2)], { type: "application/json" });
+      const url  = URL.createObjectURL(blob);
+      const a    = document.createElement("a");
+      a.href     = url;
+      a.download = "tabla-liga-chilena.json";
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    cargarTabla();
+  </script>
+</body>
+</html>

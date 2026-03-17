@@ -76,7 +76,7 @@
     .logo-placeholder {
       width: 28px;
       height: 28px;
-      background: #30363d;
+      background: #dddddd;
       border-radius: 50%;
       flex-shrink: 0;
     }
@@ -156,7 +156,6 @@
   </div>
 
   <script>
-    // Diccionario de logos locales
     const LOGOS = {
       "Colo Colo":                "logos/colocolo.png",
       "Universidad de Chile":     "logos/unichile.png",
@@ -177,7 +176,6 @@
     };
 
     function getLogo(nombre) {
-      // Busca coincidencia exacta primero, luego parcial
       if (LOGOS[nombre]) return LOGOS[nombre];
       const key = Object.keys(LOGOS).find(k =>
         nombre.toLowerCase().includes(k.toLowerCase()) ||
@@ -198,7 +196,7 @@
 
     async function cargarTabla() {
       try {
-        const res  = await fetch("http://localhost:8000/tabla");
+        const res  = await fetch("/tabla");
         const data = await res.json();
         datosTabla = data.tabla;
         renderTabla(datosTabla);
@@ -207,7 +205,7 @@
       } catch (e) {
         document.getElementById("cuerpo").innerHTML =
           `<tr><td colspan="10" style="text-align:center;padding:20px;color:#ef4444;">
-            ⚠️ No se pudo conectar con la API. Asegúrate de que el servidor esté corriendo.
+            ⚠️ No se pudo conectar con la API.
           </td></tr>`;
       }
     }
@@ -217,7 +215,7 @@
       cuerpo.innerHTML = tabla.map(e => {
         const logo = getLogo(e.equipo);
         const imgHTML = logo
-          ? `<img src="${logo}" class="logo" alt="${e.equipo}" onerror="this.replaceWith(document.createElement('div'));this.className='logo-placeholder'">`
+          ? `<img src="${logo}" class="logo" alt="${e.equipo}" onerror="this.style.display='none'">`
           : `<div class="logo-placeholder"></div>`;
 
         return `
